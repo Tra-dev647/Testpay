@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/telegram.js": { "maxDuration": 60, "includeFiles": "assets/**" },
+    "api/cron-check.js": { "maxDuration": 30 }
+  },
+  "crons": [{ "path": "/api/cron-check", "schedule": "0 0 * * *" }]
+}

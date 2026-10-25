@@ -1,0 +1,15 @@
+{
+  "name": "apple-bot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Telegram bot selling apples, paid by Bakong KHQR",
+  "engines": { "node": "22.x" },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.1",
+    "@vercel/functions": "^2.0.0",
+    "bakong-khqr": "^1.0.20",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.33.5"
+  }
+}
