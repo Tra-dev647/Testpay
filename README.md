@@ -1,6 +1,6 @@
 # Apple Bot — Telegram + Bakong KHQR
 
-Sells apples at 500៛ each. The buyer picks a quantity, the bot sends a KHQR card, and confirms
+Sells apples at $0.01 each (USD, set PRICE_USD_CENTS). The buyer picks a quantity, the bot sends a KHQR card, and confirms
 payment automatically through the Bakong Open API.
 
 ## Setup (once)

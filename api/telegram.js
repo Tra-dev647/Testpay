@@ -2,7 +2,7 @@ import { waitUntil } from "@vercel/functions";
 import { sql } from "../lib/db.js";
 import { tg } from "../lib/telegram.js";
 import {
-  PRICE, MAX_QTY, UUID, fmtKhr,
+  PRICE, MAX_QTY, UUID, fmtMoney,
   createAndSendOrder, settleAndNotify, cancelOrder
 } from "../lib/orders.js";
 
@@ -10,7 +10,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const menuKb = () => ({
   inline_keyboard: [
-    [{ text: `🍎 ទិញ Apple (${fmtKhr(PRICE())} / ផ្លែ)`, callback_data: "q:1" }],
+    [{ text: `🍎 ទិញ Apple (${fmtMoney(PRICE())} / ផ្លែ)`, callback_data: "q:1" }],
     [{ text: "📦 ការបញ្ជាទិញរបស់ខ្ញុំ", callback_data: "o" }]
   ]
 });
@@ -21,13 +21,13 @@ function qtyView(n) {
   const bump = (d, label) => ({ text: label, callback_data: `q:${Math.min(max, Math.max(1, n + d))}` });
   return {
     text:
-      `🍎 <b>Apple</b> — ${fmtKhr(PRICE())} / ផ្លែ\n\n` +
-      `ចំនួន: <b>${n}</b> ផ្លែ\nសរុប: <b>${fmtKhr(n * PRICE())}</b>`,
+      `🍎 <b>Apple</b> — ${fmtMoney(PRICE())} / ផ្លែ\n\n` +
+      `ចំនួន: <b>${n}</b> ផ្លែ\nសរុប: <b>${fmtMoney(n * PRICE())}</b>`,
     reply_markup: {
       inline_keyboard: [
         [bump(-1, "➖"), { text: `${n} 🍎`, callback_data: "noop" }, bump(1, "➕")],
         [1, 5, 10, 20].map((v) => ({ text: String(v), callback_data: `q:${v}` })),
-        [{ text: `✅ ទិញ ${n} ផ្លែ — ${fmtKhr(n * PRICE())}`, callback_data: `b:${n}` }],
+        [{ text: `✅ ទិញ ${n} ផ្លែ — ${fmtMoney(n * PRICE())}`, callback_data: `b:${n}` }],
         [{ text: "⬅️ ត្រឡប់ក្រោយ", callback_data: "m" }]
       ]
     }
@@ -35,7 +35,7 @@ function qtyView(n) {
 }
 
 const WELCOME = () =>
-  `សួស្តី! 👋 ស្វាគមន៍មកកាន់ហាងលក់ 🍎 Apple\nតម្លៃ <b>${fmtKhr(PRICE())}</b> ក្នុងមួយផ្លែ។ បង់ប្រាក់ដោយ KHQR (Bakong)។`;
+  `សួស្តី! 👋 ស្វាគមន៍មកកាន់ហាងលក់ 🍎 Apple\nតម្លៃ <b>${fmtMoney(PRICE())}</b> ក្នុងមួយផ្លែ។ បង់ប្រាក់ដោយ KHQR (Bakong)។`;
 
 async function watch(id) {
   // Poll Bakong in the background for ~50s so the buyer gets instant confirmation.
@@ -52,7 +52,7 @@ async function listOrders(chatId) {
                          WHERE chat_id=${chatId} ORDER BY created_at DESC LIMIT 5`;
   if (!rows.length) return tg("sendMessage", { chat_id: chatId, text: "អ្នកមិនទាន់មានការបញ្ជាទិញទេ។" });
   const icon = { PAID: "✅", PENDING: "⏳", EXPIRED: "⏰", CANCELLED: "❌", FAILED: "⚠️" };
-  const lines = rows.map((o) => `${icon[o.status] || "•"} <code>${o.id.slice(0, 8)}</code> — 🍎 × ${o.qty} = ${fmtKhr(o.amount)} (${o.status})`);
+  const lines = rows.map((o) => `${icon[o.status] || "•"} <code>${o.id.slice(0, 8)}</code> — 🍎 × ${o.qty} = ${fmtMoney(o.amount)} (${o.status})`);
   return tg("sendMessage", { chat_id: chatId, parse_mode: "HTML", text: "📦 <b>ការបញ្ជាទិញចុងក្រោយ</b>\n\n" + lines.join("\n") });
 }
 
